@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 
 namespace TaskManager.ViewModels
 {
@@ -24,17 +25,66 @@ namespace TaskManager.ViewModels
         {
             get => new RelayCommand(() =>
             {
+
                 Popupisopen=true;
            
             });
         }
+        public RelayCommand Delete
+        {
+            get => new RelayCommand(() =>
+            {
+               if(Selected_Process != null)
+                {
+                    Selected_Process.Kill();
+             
+                    processes.Remove(selected_Process);
 
+
+                }
+            });
+        }
+        private Process selected_Process;
+
+        public Process Selected_Process
+        {
+            get { return selected_Process; }
+            set { selected_Process = value; OnPropertyChanged(); }
+        }
+        private string serachtext;
+
+        public string SearchText
+        {
+            get { return serachtext; }
+            set
+            {
+                serachtext = value; OnPropertyChanged();
+                CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(processes);
+                view.Filter = userFilter;
+            }
+        }
+        private bool userFilter(object item)
+        {
+            if (String.IsNullOrEmpty(SearchText))
+                return true;
+            else
+                return ((item as Process).ProcessName.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0);
+
+        }
         public RelayCommand Add
         {
             get => new RelayCommand(() =>
             {
                 Popupisopen=true;
                 Process.Start(Text);
+                processes.Clear();
+
+                foreach (var process in Process.GetProcesses())
+                {
+                    processes.Add(process);
+
+
+                }
             });
         }
         public RelayCommand Exit

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:TaskManager"
         mc:Ignorable="d"
      
-         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:viewmodels="clr-namespace:TaskManager.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
       TextElement.FontWeight="Regular"
       TextElement.FontSize="13"
@@ -21,8 +21,12 @@
             <RowDefinition  Height="4*"></RowDefinition>
             <RowDefinition  Height="1*"></RowDefinition>
         </Grid.RowDefinitions>
+        <TextBox  Text="{Binding SearchText,UpdateSourceTrigger=PropertyChanged}"
+  materialDesign:HintAssist.Hint="Search"
+  Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+  VerticalAlignment="Center" />
         <StackPanel Grid.Row="1" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="True">
-            <ListView   ItemsSource="{Binding processes}" SelectedItem="{Binding Selected_book,UpdateSourceTrigger=PropertyChanged}" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible" Height="800" >
+            <ListView   ItemsSource="{Binding processes}" SelectedItem="{Binding Selected_Process,UpdateSourceTrigger=PropertyChanged}" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible" Height="800" >
                 <ListView.View >
                     <GridView  >
 
@@ -56,9 +60,9 @@
             <Border BorderThickness="15">
                 <Button
   Style="{StaticResource MaterialDesignRaisedDarkButton}"
- 
+ Command="{Binding Delete}"
   ToolTip="Resource name: MaterialDesignRaisedLightDarkButton"
-  Content="_DARK"
+  Content="Close"
   IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
             </Border>
         </StackPanel>
