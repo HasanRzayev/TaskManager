@@ -15,58 +15,198 @@
       FontFamily="{DynamicResource MaterialDesignFont}"
       Height="850" Width="1600"
         Title="MainWindow" >
+    <Window.Resources>
+        
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition  Height="1*"></RowDefinition>
-            <RowDefinition  Height="4*"></RowDefinition>
+            <RowDefinition  Height="8*"></RowDefinition>
+            <RowDefinition  Height="1*"></RowDefinition>
             <RowDefinition  Height="1*"></RowDefinition>
         </Grid.RowDefinitions>
-        <TextBox  Text="{Binding SearchText,UpdateSourceTrigger=PropertyChanged}"
+        <TextBox  Grid.Row="0" Text="{Binding SearchText,UpdateSourceTrigger=PropertyChanged}"
   materialDesign:HintAssist.Hint="Search"
   Style="{StaticResource MaterialDesignFloatingHintTextBox}"
   VerticalAlignment="Center" />
-        <StackPanel Grid.Row="1" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="True">
-            <ListView   ItemsSource="{Binding processes}" SelectedItem="{Binding Selected_Process,UpdateSourceTrigger=PropertyChanged}" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible" Height="800" >
-                <ListView.View >
-                    <GridView  >
+   
+       
+       
 
-                        <GridViewColumn Width="200" Header="Id" 
-              DisplayMemberBinding="{Binding Id}"  />
-                        <GridViewColumn Width="200" Header="ProcessName"  
-              DisplayMemberBinding="{Binding ProcessName}" />
-                        <GridViewColumn Width="200" Header="HandleCount" 
-              DisplayMemberBinding="{Binding HandleCount}" />
-                        <GridViewColumn Width="200" Header="ThreadCount" 
-              DisplayMemberBinding="{Binding Threads.Count}" />
-                        <GridViewColumn Width="200" Header="Machine" 
-              DisplayMemberBinding="{Binding MachineName}" />
-                       
-                    
-                    </GridView>
+                
+            <materialDesign:DialogHost  Grid.Row="1"
+  
+  Style="{StaticResource MaterialDesignEmbeddedDialogHost}"
+  DialogMargin="8" >
+                <materialDesign:DialogHost.DialogContent >
+                    <StackPanel
+      Margin="16">
+                        <TextBox Text="{Binding Text}" Foreground="Blue"></TextBox>
 
-                </ListView.View>
-            </ListView>
-
-        </StackPanel>
-        <StackPanel Grid.Row="2" Orientation="Horizontal">
-            <Border BorderThickness="15">
-                <Button
+                        <StackPanel
+        Orientation="Horizontal"
+        HorizontalAlignment="Right">
+                            <Button
   Style="{StaticResource MaterialDesignRaisedDarkButton}"
- Command="{Binding Create}"
+ Command="{Binding Add}"
+  ToolTip="Resource name: MaterialDesignRaisedLightDarkButton"
+  Content="Add"
+  IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" >
+                                <Button.CommandParameter>
+                                    <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">
+                                        True
+                                    </system:Boolean>
+                                </Button.CommandParameter>
+                            </Button>
+                            <Button
+          Style="{StaticResource MaterialDesignFlatButton}"
+          IsCancel="True"
+          Margin="0 8 8 0"
+          Content="CANCEL"
+          Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
+                                <Button.CommandParameter>
+                                    <system:Boolean xmlns:system="clr-namespace:System;assembly=mscorlib">
+                                        False
+                                    </system:Boolean>
+                                </Button.CommandParameter>
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </materialDesign:DialogHost.DialogContent>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="8*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="True" >
+                        <ListView   ItemsSource="{Binding processes}" SelectedItem="{Binding Selected_Process,UpdateSourceTrigger=PropertyChanged}" ScrollViewer.HorizontalScrollBarVisibility="Visible"  ScrollViewer.VerticalScrollBarVisibility="Visible" Height="800" >
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.View  >
+                                <GridView  >
+                              
+                                <GridViewColumn Header="Id" Width="150"  >
+                                        <GridViewColumn.CellTemplate >
+                                            <DataTemplate>
+                                                <Grid Background="White">
+                                                <TextBlock Text="{Binding Path=process.Id}" Background="White" />
+                                                </Grid>
+
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="ProcessName" Width="150" >
+                                        <GridViewColumn.CellTemplate >
+                                            <DataTemplate >
+                                                <TextBlock Text="{Binding Path=process.ProcessName}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                <GridViewColumn Header="STATUS" Width="150" >
+                                    <GridViewColumn.CellTemplate >
+                                        <DataTemplate >
+                                            <TextBlock Text="{Binding Path=isrunning}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="CPU" Width="150" >
+                                    <GridViewColumn.CellTemplate >
+                                        <DataTemplate >
+                                            <TextBlock Text="{Binding Path=cpu}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="HandleCount" Width="150">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                            <TextBlock Text="{Binding Path=process.HandleCount}" Background="Yellow"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="ThreadCount" Width="150">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                            <TextBlock Text="{Binding Path=process.Threads.Count}" Background="Yellow"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="WorkingSet"  Width="150">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                            <TextBlock Text="{Binding Path=process.WorkingSet}" Background="Yellow"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="PagedSystemMemorySize64" Width="150">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                            <TextBlock Text="{Binding Path=process.PagedSystemMemorySize64}" Background="Yellow"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="UserProcessorTime" Width="150">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                            <TextBlock Text="{Binding Path=process.UserProcessorTime}" Background="Yellow"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+
+
+                                </GridView>
+
+                            </ListView.View>
+                        </ListView>
+
+                    </StackPanel>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                       
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Border BorderThickness="15" Grid.Column="0">
+                        <Button  Background="Gray"
+  Style="{StaticResource MaterialDesignRaisedDarkButton}"
+ Command="{Binding Refresh}"
+  ToolTip="Resource name: MaterialDesignRaisedLightDarkButton"
+  Content="Refresh"
+  IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
+                    </Border>
+                    <Border BorderThickness="15" Grid.Column="1">
+                        <Button Grid.Column="2" Background="Gray"
+  Style="{StaticResource MaterialDesignRaisedDarkButton}" 
+ Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
   ToolTip="Resource name: MaterialDesignRaisedLightDarkButton"
   Content="Create"
   IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
-            </Border>
-            <Border BorderThickness="15">
-                <Button
+                    </Border>
+                    <Border BorderThickness="15" Grid.Column="2">
+
+                        <Button  Background="Gray"
   Style="{StaticResource MaterialDesignRaisedDarkButton}"
  Command="{Binding Delete}"
   ToolTip="Resource name: MaterialDesignRaisedLightDarkButton"
   Content="Close"
   IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
-            </Border>
-        </StackPanel>
-        <Popup Placement="Center" IsOpen="{Binding Popupisopen,UpdateSourceTrigger=PropertyChanged}" Width="200" Height="200">
+                    </Border>
+                </Grid>
+                   
+        </Grid>
+
+          
+      
+            </materialDesign:DialogHost>
+
+       
+        <!--<Popup Placement="Center" IsOpen="{Binding Popupisopen,UpdateSourceTrigger=PropertyChanged}" Width="200" Height="200">
             <StackPanel Background="Red">
                 <Border CornerRadius="10"  BorderThickness="15" >
                     <Button Width="60" Height="30" HorizontalAlignment="Right" Command="{Binding Exit}"  >
@@ -86,6 +226,6 @@
   IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
                 </Border>
             </StackPanel>
-        </Popup>
+        </Popup>-->
     </Grid>
 </Window>

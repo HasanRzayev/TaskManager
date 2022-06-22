@@ -1,17 +1,51 @@
-﻿using GalaSoft.MvvmLight.Command;
+﻿using BespokeFusion;
+using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
+
 namespace TaskManager.ViewModels
 {
+    public class pro
+    {
+        public pro(Process process)
+        {
+            this.process=process;
+            if (process.ProcessName.Length == 0)
+                isrunning="no";
+            else isrunning="running";
+            var startTime = DateTime.UtcNow;
+            var startCpuUsage = Process.GetCurrentProcess().TotalProcessorTime;
+           
+
+            var endTime = DateTime.UtcNow;
+            var endCpuUsage = Process.GetCurrentProcess().TotalProcessorTime;
+            var cpuUsedMs = (endCpuUsage - startCpuUsage).TotalMilliseconds;
+            var totalMsPassed = (endTime - startTime).TotalMilliseconds;
+            var cpuUsageTotal = cpuUsedMs / (Environment.ProcessorCount * totalMsPassed);
+            cpu=cpuUsageTotal * 100;
+
+
+            
+        }
+
+        public Process process { get; set; }
+        public string image { get; set; }
+        public string isrunning { get; set; }
+        public string ico { get; set; }
+
+
+        public double cpu { get; set; }
+    }
     public class MainViewModel : INotifyPropertyChanged
     {
 
@@ -36,7 +70,7 @@ namespace TaskManager.ViewModels
             {
                if(Selected_Process != null)
                 {
-                    Selected_Process.Kill();
+                    Selected_Process.process.Kill();
              
                     processes.Remove(selected_Process);
 
@@ -44,9 +78,26 @@ namespace TaskManager.ViewModels
                 }
             });
         }
-        private Process selected_Process;
+        public RelayCommand Refresh
+        {
+            get => new RelayCommand(() =>
+            {
+                if (Selected_Process != null)
+                {
 
-        public Process Selected_Process
+                    processes.Clear();
+                    foreach (var process in Process.GetProcesses())
+                    {
+                        processes.Add(new pro(process));
+
+                    }
+
+                }
+            });
+        }
+        private pro selected_Process;
+
+        public pro Selected_Process
         {
             get { return selected_Process; }
             set { selected_Process = value; OnPropertyChanged(); }
@@ -68,23 +119,32 @@ namespace TaskManager.ViewModels
             if (String.IsNullOrEmpty(SearchText))
                 return true;
             else
-                return ((item as Process).ProcessName.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0);
+                return ((item as pro).process.ProcessName.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0);
 
         }
         public RelayCommand Add
         {
             get => new RelayCommand(() =>
             {
-                Popupisopen=true;
-                Process.Start(Text);
-                processes.Clear();
-
-                foreach (var process in Process.GetProcesses())
+                try
                 {
-                    processes.Add(process);
+                    Popupisopen=true;
+                    Process.Start(Text);
+                    processes.Clear();
+
+                    foreach (var process in Process.GetProcesses())
+                    {
+                        processes.Add(new pro(process));
 
 
+                    }
                 }
+                catch (Exception)
+                {
+
+                    MaterialMessageBox.ShowError(@"Nooooooooooooooooooooo");
+                }
+            
             });
         }
         public RelayCommand Exit
@@ -113,16 +173,16 @@ namespace TaskManager.ViewModels
             set { text = value; OnPropertyChanged(); }
         }
 
-        public ObservableCollection<Process> processes { get; set; }
+        public ObservableCollection<pro> processes { get; set; }
         public MainViewModel(){
 
-            processes = new ObservableCollection<Process>();    
+            processes = new ObservableCollection<pro>();    
             foreach (var process in Process.GetProcesses())
             {
-                processes.Add(process);
-
-
+                processes.Add(new pro(process));
+             
             }
+            
      
          }
     }
