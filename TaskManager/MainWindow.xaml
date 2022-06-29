@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:TaskManager"
         mc:Ignorable="d"
      
-         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:viewmodels="clr-namespace:TaskManager.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
+         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:viewmodels="clr-namespace:TaskManager.ViewModels" xmlns:hc="https://handyorg.github.io/handycontrol" d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
       TextElement.FontWeight="Regular"
       TextElement.FontSize="13"
@@ -22,9 +22,21 @@
         <Grid.RowDefinitions>
             <RowDefinition  Height="1*"></RowDefinition>
             <RowDefinition  Height="8*"></RowDefinition>
-            <RowDefinition  Height="1*"></RowDefinition>
+       
             <RowDefinition  Height="1*"></RowDefinition>
         </Grid.RowDefinitions>
+        <hc:RunningBlock Grid.Row="2" Margin="0,16,0,0" Duration="0:0:20"  IsRunning="{Binding IsMouseOver,RelativeSource={RelativeSource Self},Converter={StaticResource Boolean2BooleanReConverter}}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text=" Hər cür proyektlərə dizayn üçün əlaqə     " FontSize="30"></TextBlock>
+
+                <Image Source="https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Instagram-256.png" Width="30"/>
+                <TextBlock Text="  h.a.s.a.n.rza         " FontSize="30"></TextBlock>
+                <Image Source="https://cdn0.iconfinder.com/data/icons/zondicons/20/phone-256.png" Width="30"/>
+                <TextBlock Text="  999.999.99.99        " FontSize="30"></TextBlock>
+
+
+            </StackPanel>
+        </hc:RunningBlock>
         <TextBox  Grid.Row="0" Text="{Binding SearchText,UpdateSourceTrigger=PropertyChanged}"
   materialDesign:HintAssist.Hint="Search"
   Style="{StaticResource MaterialDesignFloatingHintTextBox}"
